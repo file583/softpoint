@@ -25,8 +25,21 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: -2; /* Изменено на -2 чтобы было под GIF */
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        }
+        
+        /* Новый стиль для GIF фона */
+        .gif-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            object-fit: cover;
+            opacity: 0.15; /* Полупрозрачность для лучшей читаемости */
+            pointer-events: none;
         }
         
         canvas {
@@ -241,6 +254,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <!-- GIF фон -->
+    <img class="gif-background" src="assets/tt.gif" alt="Animated background">
+    
     <div class="canvas-container">
         <canvas id="canvas"></canvas>
     </div>
