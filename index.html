@@ -544,6 +544,111 @@
             padding: 0 10px;
         }
         
+        /* ===== НОВЫЕ ЭФФЕКТЫ ===== */
+        
+        /* 1. Matrix Glitch Effect */
+        .glitch-effect {
+            animation: glitch 0.5s infinite;
+            text-shadow: 
+                0 0 10px red,
+                0 0 20px cyan;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-5px, 5px); }
+            40% { transform: translate(-5px, -5px); }
+            60% { transform: translate(5px, 5px); }
+            80% { transform: translate(5px, -5px); }
+            100% { transform: translate(0); }
+        }
+        
+        /* 2. Blood Splatter */
+        .blood-splatter {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M30,50 Q50,30 70,50 T90,50 Q70,70 50,50 T10,50 Q30,30 50,50 Z" fill="darkred"/></svg>') no-repeat;
+            pointer-events: none;
+            z-index: 999;
+            transform: scale(0);
+            animation: blood-grow 0.3s forwards;
+        }
+        
+        @keyframes blood-grow {
+            to { transform: scale(1); opacity: 0; }
+        }
+        
+        /* 3. Satanic Ritual */
+        .satanic-ritual {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .candle {
+            position: fixed;
+            width: 30px;
+            height: 80px;
+            background: linear-gradient(to bottom, #222, #000);
+            z-index: -1;
+        }
+        
+        .candle::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 30px;
+            background: linear-gradient(orange, red);
+            border-radius: 50% 50% 20% 20%;
+            filter: blur(5px);
+            animation: flicker 2s infinite alternate;
+        }
+        
+        .pentagram {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,5 L61,37 L95,38 L67,59 L76,93 L50,75 L24,93 L33,59 L5,38 L39,37 Z" fill="none" stroke="darkred" stroke-width="2"/></svg>') no-repeat;
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; height: 30px; }
+            50% { opacity: 0.7; height: 25px; }
+        }
+        
+        /* 4. Hacker Terminal */
+        .hacker-terminal {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #000;
+            color: lime;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            border-top: 2px solid red;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .hacker-terminal pre {
+            margin: 0;
+            line-height: 1.5;
+        }
+        
         /* АНИМАЦИИ */
         @keyframes gradient {
             0% { background-position: 0% 50%; }
@@ -678,8 +783,25 @@
         <p>Проверка защиты... <span id="ddosPercent">0%</span></p>
     </div>
     
+    <!-- Сатанинский ритуал (свечи + пентаграмма) -->
+    <div class="satanic-ritual">
+        <div class="candle" style="top: 20%; left: 10%;"></div>
+        <div class="candle" style="top: 20%; right: 10%;"></div>
+        <div class="pentagram"></div>
+    </div>
+    
+    <!-- Хакерский терминал (скрыт по умолчанию) -->
+    <div class="hacker-terminal" id="hackerTerminal">
+        <pre>
+> Подключаемся к серверу ФСБ...
+> Взлом VPN... УСПЕШНО!
+> Загрузка данных... 100%
+> ВАШ АДРЕС ПЕРЕДАН ИНТЕРПОЛУ
+        </pre>
+    </div>
+    
     <div class="content">
-        <h1 class="logo">SoftPoint</h1>
+        <h1 class="logo" id="mainLogo">SoftPoint</h1>
         <p class="tagline">Братки, переходим в мой тгк, там больше завоза ❤️</p>
         
         <!-- Фотки с голографическим эффектом -->
@@ -703,7 +825,7 @@
         
         <!-- Кнопки -->
         <div class="buttons-container">
-            <a href="https://t.me/SoftPoint16" class="tg-button main-tg-button blood-button" target="_blank">
+            <a href="https://t.me/SoftPoint16" class="tg-button main-tg-button blood-button" target="_blank" id="bloodButton">
                 <i class="fab fa-telegram"></i> Наш ТГК
             </a>
             <a href="https://t.me/psychonautu" class="tg-button" target="_blank">
@@ -769,6 +891,8 @@
     </audio>
 
     <script>
+        // ===== ОСНОВНЫЕ ЭФФЕКТЫ =====
+        
         // Интерактивный фон
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -951,6 +1075,11 @@
         setInterval(() => {
             btc += Math.random() * 0.0000001;
             cryptoText.textContent = btc.toFixed(7);
+            
+            // Каждые 10 секунд "взламываем" терминал
+            if (Math.random() > 0.95) {
+                showHackerTerminal();
+            }
         }, 1000);
         
         // Вирусная атака при попытке уйти
@@ -999,6 +1128,11 @@
                 loadingScreen.style.opacity = '0';
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
+                    
+                    // После загрузки включаем глитч-эффект
+                    setInterval(() => {
+                        document.getElementById('mainLogo').classList.toggle('glitch-effect');
+                    }, 3000);
                 }, 500);
             }, 3000);
         });
@@ -1011,6 +1145,48 @@
                 }
             });
         });
+        
+        // ===== НОВЫЕ ЭФФЕКТЫ =====
+        
+        // 1. Кровавый кликер
+        const bloodButton = document.getElementById('bloodButton');
+        bloodButton.addEventListener('click', (e) => {
+            // Создаем брызги крови
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    createBloodSplatter(e.clientX, e.clientY);
+                }, i * 100);
+            }
+        });
+        
+        function createBloodSplatter(x, y) {
+            const blood = document.createElement('div');
+            blood.className = 'blood-splatter';
+            blood.style.left = `${x + (Math.random() * 40 - 20)}px`;
+            blood.style.top = `${y + (Math.random() * 40 - 20)}px`;
+            blood.style.transform = `rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.5 + 0.5})`;
+            document.body.appendChild(blood);
+            setTimeout(() => blood.remove(), 1000);
+        }
+        
+        // 2. Хакерский терминал
+        function showHackerTerminal() {
+            const terminal = document.getElementById('hackerTerminal');
+            terminal.style.display = 'block';
+            setTimeout(() => {
+                terminal.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 3. Случайные глитчи на странице
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                document.body.classList.add('glitch-effect');
+                setTimeout(() => {
+                    document.body.classList.remove('glitch-effect');
+                }, 200);
+            }
+        }, 5000);
         
         // PWA регистрация
         if ('serviceWorker' in navigator) {
