@@ -648,6 +648,133 @@
             margin: 0;
             line-height: 1.5;
         }
+
+        /* GitHub Contribution Grid */
+        .github-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect width="15" height="15" fill="%238e2de2" opacity="0.1"/></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* GitHub PR Popup */
+        .github-pr {
+            position: fixed;
+            bottom: -300px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 600px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #c9d1d9;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            z-index: 10000;
+            transition: bottom 0.5s;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .pr-header {
+            padding: 12px;
+            background: #238636;
+            color: white;
+            font-weight: bold;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pr-body {
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            background: #161b22;
+        }
+        .pr-body pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        /* Undertale RIP Effect */
+        .pixel-destruction {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="5" height="5" fill="red"/></svg>');
+            z-index: 99999;
+            opacity: 0;
+            pointer-events: none;
+            animation: pixelate 3s forwards;
+            display: none;
+        }
+        @keyframes pixelate {
+            0% { opacity: 0; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(50); }
+        }
+
+        /* GitHub Ban Hammer */
+        .ban-hammer {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 5rem;
+            color: red;
+            z-index: 99999;
+            opacity: 0;
+            text-shadow: 0 0 20px rgba(255,0,0,0.7);
+            animation: hammerStrike 1s forwards;
+            display: none;
+        }
+        @keyframes hammerStrike {
+            0% { opacity: 0; transform: translate(-50%, -100%) rotate(-45deg); }
+            50% { opacity: 1; transform: translate(-50%, -50%) rotate(15deg); }
+            100% { opacity: 0; transform: translate(-50%, 0%) rotate(-45deg); }
+        }
+
+        /* Deploy to Darknet Button */
+        .deploy-button {
+            display: inline-flex;
+            align-items: center;
+            background: #238636;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 600;
+            margin-top: 20px;
+            border: 1px solid #2ea043;
+            transition: all 0.2s;
+        }
+        .deploy-button:hover {
+            background: #2ea043;
+            transform: translateY(-2px);
+        }
+        .deploy-button i {
+            margin-right: 8px;
+        }
+
+        /* GitHub Theme */
+        body.github-theme {
+            background: #0d1117;
+            color: #c9d1d9;
+        }
+        .github-theme .buttons-container {
+            border: 1px solid #30363d;
+            background: rgba(13,17,23,0.8);
+        }
+        .github-theme .tg-button {
+            background: rgba(48,54,61,0.5);
+            border-color: #30363d;
+        }
         
         /* АНИМАЦИИ */
         @keyframes gradient {
@@ -751,6 +878,10 @@
             .virus-text {
                 font-size: 1.5rem;
             }
+
+            .github-pr {
+                width: 90%;
+            }
         }
     </style>
 </head>
@@ -762,9 +893,36 @@
         <canvas id="canvas"></canvas>
     </div>
     
+    <!-- GitHub Contribution Grid Background -->
+    <div class="github-grid"></div>
+    
     <!-- Неоновые вывески -->
     <div class="neon-sign" id="neonSign1">18+ ONLY</div>
     <div class="neon-sign" id="neonSign2">DARKNET EDITION</div>
+    
+    <!-- GitHub PR Popup -->
+    <div class="github-pr" id="githubPR">
+        <div class="pr-header">
+            <i class="fab fa-github"></i> Pull Request Approved!
+        </div>
+        <div class="pr-body">
+            <pre>Conflicts:
+src/life/brain.js
+- <<<<<<< HEAD
+- console.log("Я законопослушный гражданин");
+- =======
+- console.log("Всё продаётся, братки");
+- >>>>>>> darknet</pre>
+        </div>
+    </div>
+
+    <!-- Undertale RIP Effect -->
+    <div class="pixel-destruction" id="pixelDestruction"></div>
+
+    <!-- GitHub Ban Hammer -->
+    <div class="ban-hammer" id="banHammer">
+        <i class="fas fa-ban"></i>
+    </div>
     
     <!-- Экран загрузки -->
     <div class="loading-screen" id="loadingScreen">
@@ -835,6 +993,11 @@
                 <i class="fab fa-telegram"></i> Мой помощник
             </a>
         </div>
+
+        <!-- Deploy to Darknet Button -->
+        <a href="#" class="deploy-button" id="deployBtn">
+            <i class="fab fa-github"></i> Deploy to Darknet
+        </a>
     </div>
 
     <!-- Счетчик просмотров -->
@@ -1187,6 +1350,65 @@
                 }, 200);
             }
         }, 5000);
+
+        // ===== GITHUB-ЭФФЕКТЫ =====
+
+        // GitHub PR Popup
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500 && !localStorage.getItem('prShown')) {
+                document.getElementById('githubPR').style.bottom = '20px';
+                localStorage.setItem('prShown', 'true');
+                setTimeout(() => {
+                    document.getElementById('githubPR').style.bottom = '-300px';
+                }, 5000);
+            }
+        });
+
+        // Undertale RIP Effect через 2 минуты
+        setTimeout(() => {
+            const pixels = document.getElementById('pixelDestruction');
+            pixels.style.display = 'block';
+            setTimeout(() => {
+                pixels.style.display = 'none';
+            }, 3000);
+        }, 120000);
+
+        // GitHub Ban Hammer при копировании
+        document.addEventListener('copy', (e) => {
+            e.preventDefault();
+            const hammer = document.getElementById('banHammer');
+            hammer.style.display = 'block';
+            setTimeout(() => {
+                hammer.style.display = 'none';
+            }, 1000);
+            alert('🚨 GitHub Legal Team заблокировал это действие!');
+        });
+
+        // Deploy to Darknet Button
+        document.getElementById('deployBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('🚀 Запускаем ракету в даркнет...');
+            
+            // Активируем GitHub тему
+            document.body.classList.add('github-theme');
+            
+            // Показываем терминал
+            showHackerTerminal();
+        });
+
+        // 3D-эффект при клике на логотип
+        document.querySelector('.logo').addEventListener('click', () => {
+            document.body.style.transform = 'perspective(1000px) rotateX(60deg)';
+            document.body.style.transition = 'transform 2s';
+            setTimeout(() => {
+                document.body.style.transform = 'none';
+            }, 2000);
+        });
+
+        // Console Easter Egg
+        console.log('%cВнимание!', 'color: red; font-size: 20px;');
+        console.log('%cConsole.log — это как наркотик: 1 раз попробовал — и ты в системе', 'color: #8e2de2;');
+        console.log('%cGitHub Admins: Это всего лишь шутка, не баните пж', 'color: lime; font-weight: bold;');
         
         // PWA регистрация
         if ('serviceWorker' in navigator) {
