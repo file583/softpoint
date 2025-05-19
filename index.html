@@ -73,6 +73,7 @@
             text-shadow: 0 0 20px rgba(142, 45, 226, 0.3);
             animation: gradient 8s ease infinite;
             background-size: 400% 400%;
+            cursor: pointer;
         }
         
         .tagline {
@@ -581,7 +582,7 @@
         
         /* 3. Satanic Ritual */
         .satanic-ritual {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -776,6 +777,20 @@
             border-color: #30363d;
         }
         
+        /* Devil Mode */
+        .devil-mode {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10rem;
+            color: red;
+            text-shadow: 0 0 20px red;
+            z-index: 99999;
+            animation: glitch 1s infinite;
+            display: none;
+        }
+        
         /* АНИМАЦИИ */
         @keyframes gradient {
             0% { background-position: 0% 50%; }
@@ -899,6 +914,9 @@
     <!-- Неоновые вывески -->
     <div class="neon-sign" id="neonSign1">18+ ONLY</div>
     <div class="neon-sign" id="neonSign2">DARKNET EDITION</div>
+    
+    <!-- Devil Mode Easter Egg -->
+    <div class="devil-mode" id="devilMode">😈 666 😈</div>
     
     <!-- GitHub PR Popup -->
     <div class="github-pr" id="githubPR">
@@ -1309,9 +1327,84 @@ src/life/brain.js
             });
         });
         
-        // ===== НОВЫЕ ЭФФЕКТЫ =====
+        // ===== ПАСХАЛКА 666 =====
+        let clickCount = 0;
+        const logo = document.getElementById('mainLogo');
+        const devilMode = document.getElementById('devilMode');
+        const pentagram = document.querySelector('.pentagram');
         
-        // 1. Кровавый кликер
+        logo.addEventListener('click', () => {
+            clickCount++;
+            
+            if (clickCount === 6) {
+                activate666EasterEgg();
+                clickCount = 0;
+            }
+        });
+        
+        function activate666EasterEgg() {
+            // 1. Меняем фон на кроваво-красный
+            document.body.style.background = '#111';
+            document.querySelector('.canvas-container').style.background = 'linear-gradient(135deg, #300000, #600000, #400000)';
+            
+            // 2. Показываем демонический текст
+            devilMode.style.display = 'block';
+            
+            // 3. Включаем демоническую музыку
+            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-demonic-horror-ambience-271.mp3');
+            audio.volume = 0.5;
+            audio.play();
+            
+            // 4. Активируем пентаграмму
+            pentagram.style.opacity = '1';
+            pentagram.style.background = 'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,5 L61,37 L95,38 L67,59 L76,93 L50,75 L24,93 L33,59 L5,38 L39,37 Z" fill="none" stroke="darkred" stroke-width="2"/></svg>\') no-repeat';
+            pentagram.style.animation = 'hologramPulse 0.5s infinite';
+            pentagram.style.width = '300px';
+            pentagram.style.height = '300px';
+            
+            // 5. Добавляем дополнительные свечи
+            for (let i = 0; i < 3; i++) {
+                const candle = document.createElement('div');
+                candle.className = 'candle';
+                candle.style.top = `${30 + i * 20}%`;
+                candle.style.left = `${20 + i * 15}%`;
+                document.querySelector('.satanic-ritual').appendChild(candle);
+                
+                const candle2 = document.createElement('div');
+                candle2.className = 'candle';
+                candle2.style.top = `${30 + i * 20}%`;
+                candle2.style.right = `${20 + i * 15}%`;
+                document.querySelector('.satanic-ritual').appendChild(candle2);
+            }
+            
+            // 6. Через 6.66 секунд убираем эффекты
+            setTimeout(() => {
+                devilMode.style.display = 'none';
+                document.body.style.background = '';
+                document.querySelector('.canvas-container').style.background = 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)';
+                pentagram.style.opacity = '0.1';
+                pentagram.style.animation = '';
+                pentagram.style.width = '200px';
+                pentagram.style.height = '200px';
+                audio.pause();
+                
+                // Удаляем дополнительные свечи
+                const candles = document.querySelectorAll('.candle');
+                candles.forEach((candle, index) => {
+                    if (index > 1) { // Оставляем только оригинальные 2 свечи
+                        candle.remove();
+                    }
+                });
+            }, 6660);
+            
+            // 7. Выводим в консоль
+            console.log('%c666 - The Number of the Beast', 'color: red; font-size: 30px; font-weight: bold;');
+            console.log('%cА теперь ты часть системы...', 'color: #8e2de2; font-size: 16px;');
+        }
+
+        // ===== ОСТАЛЬНЫЕ ЭФФЕКТЫ =====
+        
+        // Кровавый кликер
         const bloodButton = document.getElementById('bloodButton');
         bloodButton.addEventListener('click', (e) => {
             // Создаем брызги крови
@@ -1332,7 +1425,7 @@ src/life/brain.js
             setTimeout(() => blood.remove(), 1000);
         }
         
-        // 2. Хакерский терминал
+        // Хакерский терминал
         function showHackerTerminal() {
             const terminal = document.getElementById('hackerTerminal');
             terminal.style.display = 'block';
@@ -1341,18 +1434,6 @@ src/life/brain.js
             }, 3000);
         }
         
-        // 3. Случайные глитчи на странице
-        setInterval(() => {
-            if (Math.random() > 0.7) {
-                document.body.classList.add('glitch-effect');
-                setTimeout(() => {
-                    document.body.classList.remove('glitch-effect');
-                }, 200);
-            }
-        }, 5000);
-
-        // ===== GITHUB-ЭФФЕКТЫ =====
-
         // GitHub PR Popup
         window.addEventListener('scroll', () => {
             if (window.scrollY > 500 && !localStorage.getItem('prShown')) {
@@ -1394,15 +1475,6 @@ src/life/brain.js
             
             // Показываем терминал
             showHackerTerminal();
-        });
-
-        // 3D-эффект при клике на логотип
-        document.querySelector('.logo').addEventListener('click', () => {
-            document.body.style.transform = 'perspective(1000px) rotateX(60deg)';
-            document.body.style.transition = 'transform 2s';
-            setTimeout(() => {
-                document.body.style.transform = 'none';
-            }, 2000);
         });
 
         // Console Easter Egg
