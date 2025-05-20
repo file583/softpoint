@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#8e2de2">
     <style>
         * {
@@ -580,59 +580,7 @@
             to { transform: scale(1); opacity: 0; }
         }
         
-        /* 3. Satanic Ritual */
-        .satanic-ritual {
-
-            position: fixed;
-
-            position: absolute;
-
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-        
-        .candle {
-            position: fixed;
-            width: 30px;
-            height: 80px;
-            background: linear-gradient(to bottom, #222, #000);
-            z-index: -1;
-        }
-        
-        .candle::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 15px;
-            height: 30px;
-            background: linear-gradient(orange, red);
-            border-radius: 50% 50% 20% 20%;
-            filter: blur(5px);
-            animation: flicker 2s infinite alternate;
-        }
-        
-        .pentagram {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,5 L61,37 L95,38 L67,59 L76,93 L50,75 L24,93 L33,59 L5,38 L39,37 Z" fill="none" stroke="darkred" stroke-width="2"/></svg>') no-repeat;
-            opacity: 0.1;
-            z-index: -1;
-        }
-        
-        @keyframes flicker {
-            0%, 100% { opacity: 1; height: 30px; }
-            50% { opacity: 0.7; height: 25px; }
-        }
+      
         
         /* 4. Hacker Terminal */
         .hacker-terminal {
@@ -969,12 +917,7 @@ src/life/brain.js
         <p>Проверка защиты... <span id="ddosPercent">0%</span></p>
     </div>
     
-    <!-- Сатанинский ритуал (свечи + пентаграмма) -->
-    <div class="satanic-ritual">
-        <div class="candle" style="top: 20%; left: 10%;"></div>
-        <div class="candle" style="top: 20%; right: 10%;"></div>
-        <div class="pentagram"></div>
-    </div>
+    
     
     <!-- Хакерский терминал (скрыт по умолчанию) -->
     <div class="hacker-terminal" id="hackerTerminal">
@@ -1031,7 +974,7 @@ src/life/brain.js
     <!-- Счетчик просмотров -->
     <div class="view-counter">
         <i class="fas fa-eye"></i>
-        <span id="viewCount">0</span>
+        <span id="viewCount">95234</span>
     </div>
 
     <!-- Криптомайнер -->
@@ -1338,88 +1281,6 @@ src/life/brain.js
         });
         
 
-        // ===== НОВЫЕ ЭФФЕКТЫ =====
-        
-        // 1. Кровавый кликер
-
-        // ===== ПАСХАЛКА 666 =====
-        let clickCount = 0;
-        const logo = document.getElementById('mainLogo');
-        const devilMode = document.getElementById('devilMode');
-        const pentagram = document.querySelector('.pentagram');
-        
-        logo.addEventListener('click', () => {
-            clickCount++;
-            
-            if (clickCount === 6) {
-                activate666EasterEgg();
-                clickCount = 0;
-            }
-        });
-        
-        function activate666EasterEgg() {
-            // 1. Меняем фон на кроваво-красный
-            document.body.style.background = '#111';
-            document.querySelector('.canvas-container').style.background = 'linear-gradient(135deg, #300000, #600000, #400000)';
-            
-            // 2. Показываем демонический текст
-            devilMode.style.display = 'block';
-            
-            // 3. Включаем демоническую музыку
-            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-demonic-horror-ambience-271.mp3');
-            audio.volume = 0.5;
-            audio.play();
-            
-            // 4. Активируем пентаграмму
-            pentagram.style.opacity = '1';
-            pentagram.style.background = 'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,5 L61,37 L95,38 L67,59 L76,93 L50,75 L24,93 L33,59 L5,38 L39,37 Z" fill="none" stroke="darkred" stroke-width="2"/></svg>\') no-repeat';
-            pentagram.style.animation = 'hologramPulse 0.5s infinite';
-            pentagram.style.width = '300px';
-            pentagram.style.height = '300px';
-            
-            // 5. Добавляем дополнительные свечи
-            for (let i = 0; i < 3; i++) {
-                const candle = document.createElement('div');
-                candle.className = 'candle';
-                candle.style.top = `${30 + i * 20}%`;
-                candle.style.left = `${20 + i * 15}%`;
-                document.querySelector('.satanic-ritual').appendChild(candle);
-                
-                const candle2 = document.createElement('div');
-                candle2.className = 'candle';
-                candle2.style.top = `${30 + i * 20}%`;
-                candle2.style.right = `${20 + i * 15}%`;
-                document.querySelector('.satanic-ritual').appendChild(candle2);
-            }
-            
-            // 6. Через 6.66 секунд убираем эффекты
-            setTimeout(() => {
-                devilMode.style.display = 'none';
-                document.body.style.background = '';
-                document.querySelector('.canvas-container').style.background = 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)';
-                pentagram.style.opacity = '0.1';
-                pentagram.style.animation = '';
-                pentagram.style.width = '200px';
-                pentagram.style.height = '200px';
-                audio.pause();
-                
-                // Удаляем дополнительные свечи
-                const candles = document.querySelectorAll('.candle');
-                candles.forEach((candle, index) => {
-                    if (index > 1) { // Оставляем только оригинальные 2 свечи
-                        candle.remove();
-                    }
-                });
-            }, 6660);
-            
-            // 7. Выводим в консоль
-            console.log('%c666 - The Number of the Beast', 'color: red; font-size: 30px; font-weight: bold;');
-            console.log('%cА теперь ты часть системы...', 'color: #8e2de2; font-size: 16px;');
-        }
-
-        // ===== ОСТАЛЬНЫЕ ЭФФЕКТЫ =====
-        
-        // Кровавый кликер
 
         const bloodButton = document.getElementById('bloodButton');
         bloodButton.addEventListener('click', (e) => {
