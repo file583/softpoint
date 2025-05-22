@@ -7,75 +7,8 @@
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#8e2de2">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Montserrat', 'Arial', sans-serif;
-            color: #fff;
-            overflow-x: hidden;
-            background: #000;
-            cursor: none;
-        }
-
-        /* Стили для видео-контейнера */
-        .video-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 200px;
-            height: auto;
-            z-index: 100;
-            border: 2px solid #8e2de2;
-            border-radius: 5px;
-            overflow: hidden;
-            box-shadow: 0 0 15px rgba(142, 45, 226, 0.7);
-            transition: all 0.3s ease;
-        }
-        
-        .video-container video {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        
-        .video-control {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            width: 25px;
-            height: 25px;
-            background: rgba(0,0,0,0.7);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            color: white;
-        }
-        
-        @media (max-width: 768px) {
-            .video-container {
-                width: 120px;
-                top: 10px;
-                right: 10px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .video-container {
-                width: 120px;
-                top: 10px;
-                right: 10px;
-            }
-        }
+      
         
         .canvas-container {
             position: fixed;
@@ -933,16 +866,12 @@
     </style>
 </head>
 <body>
-        <!-- Вставка видео-контейнера (строка 1543) -->
-    <div class="video-container" id="videoContainer">
-        <video id="pageVideo" loop playsinline muted>
-            <source src="./assets/video.mp4" type="video/mp4">
-            Ваш браузер не поддерживает видео.
-        </video>
-        <div class="video-control" id="videoControl">
-            <i class="fas fa-volume-mute" id="volumeIcon"></i>
-        </div>
-    </div>
+<video width="250" controls autoplay muted preload="auto">
+  <source src="assets/glock.mp4" type="video/mp4">
+  Ваш браузер не поддерживает видео.
+</video>
+
+
 
     <!-- Остальная часть вашего HTML-кода... -->
     <img class="gif-background" src="assets/tt.gif?v=1" alt="Animated background">
@@ -1127,52 +1056,94 @@ src/life/brain.js
 
     <script>
         
-         // ===== ДОБАВЛЕННЫЙ КОД ДЛЯ УПРАВЛЕНИЯ ВИДЕО =====
+   // ===== УПРАВЛЕНИЕ YOUTUBE ВИДЕО =====
         document.addEventListener('DOMContentLoaded', function() {
-            // Управление видео
-            const video = document.getElementById('pageVideo');
+            const videoContainer = document.getElementById('videoContainer');
             const videoControl = document.getElementById('videoControl');
             const volumeIcon = document.getElementById('volumeIcon');
-            
-            // Функция запуска видео
-            function startVideo() {
-                video.muted = true; // Начинаем с выключенного звука
-                video.play()
-                    .then(() => {
-                        console.log("Видео запущено");
-                    })
-                    .catch(error => {
-                        console.log("Ошибка воспроизведения видео:", error);
-                        // Скрываем контейнер, если видео не загрузилось
-                        document.getElementById('videoContainer').style.display = 'none';
-                    });
+            let player;
+            let isMuted = true;
+
+            // 1. Загрузка YouTube API
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            // 2. Создание плеера
+            window.onYouTubeIframeAPIReady = function() {
+                player = new YT.Player('youtubeVideo', {
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            };
+
+            // 3. Когда плеер готов
+            function onPlayerReady(event) {
+                console.log("YouTube плеер готов");
+                event.target.playVideo();
             }
-            
-            // Управление звуком видео
-            videoControl.addEventListener('click', function() {
-                video.muted = !video.muted;
-                volumeIcon.className = video.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
-                
-                // Вибрация при клике (если поддерживается)
+
+            // 4. Контроль состояния
+            function onPlayerStateChange(event) {
+                if (event.data === YT.PlayerState.PLAYING) {
+                    console.log("Видео играет");
+                }
+            }
+
+            // 5. Управление звуком
+            videoControl.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (isMuted) {
+                    player.unMute();
+                    volumeIcon.className = 'fas fa-volume-up';
+                } else {
+                    player.mute();
+                    volumeIcon.className = 'fas fa-volume-mute';
+                }
+                isMuted = !isMuted;
                 if (navigator.vibrate) navigator.vibrate(30);
             });
-            
-            // Запуск видео при загрузке
-            if(video.readyState >= 3) { // Если видео уже частично загружено
-                startVideo();
-            } else {
-                video.addEventListener('loadeddata', startVideo);
-            }
-            
-            // Проверка через 3 секунды, загрузилось ли видео
-            setTimeout(() => {
-                if(video.readyState < 2) { // 0-1 значит еще не загружено
-                    console.warn("Видео не загрузилось");
-                    document.getElementById('videoContainer').style.display = 'none';
-                }
-            }, 3000);
+
+            // Эффекты при наведении
+            videoContainer.addEventListener('mouseenter', () => {
+                videoContainer.style.transform = 'scale(1.05)';
+                videoContainer.style.boxShadow = '0 0 30px rgba(142, 45, 226, 0.9)';
+            });
+
+            videoContainer.addEventListener('mouseleave', () => {
+                videoContainer.style.transform = 'scale(1)';
+                videoContainer.style.boxShadow = '0 0 20px rgba(142, 45, 226, 0.7)';
+            });
         });
 
+// ===== ДОПОЛНИТЕЛЬНЫЕ ФИШКИ =====
+// 1. Кровавый эффект при клике на кнопку
+document.getElementById('bloodButton').addEventListener('click', function(e) {
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+            const blood = document.createElement('div');
+            blood.className = 'blood-splatter';
+            blood.style.left = `${e.clientX + (Math.random() * 40 - 20)}px`;
+            blood.style.top = `${e.clientY + (Math.random() * 40 - 20)}px`;
+            document.body.appendChild(blood);
+            setTimeout(() => blood.remove(), 1000);
+        }, i * 100);
+    }
+});
+
+// 2. GitHub PR Popup
+window.addEventListener('scroll', function() {
+    if (window.scrollY > 500 && !localStorage.getItem('prShown')) {
+        const pr = document.getElementById('githubPR');
+        pr.style.bottom = '20px';
+        localStorage.setItem('prShown', 'true');
+        setTimeout(() => pr.style.bottom = '-300px', 5000);
+    }
+});
+     
 		
         // Интерактивный фон
 		
